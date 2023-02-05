@@ -5,7 +5,7 @@
   "main": "fetchfile.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon fetchfile.js"
+    "start": "node fetchfile.js"
   },
   "author": "",
   "license": "ISC",
