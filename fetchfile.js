@@ -2,6 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
 const path = require("path");
+const fs = require('fs');
+
 let propertiesReader = require("properties-reader");
 let propertiesPath = path.resolve(__dirname, "conf/db.properties");
 let properties = propertiesReader(propertiesPath);
@@ -24,6 +26,20 @@ app.use(express.json());
 //   req.collection = db.collection(collectionName);
 //   return next();
 // });
+
+const imageDirectory = path.join(__dirname, 'Images');
+app.use('/Images/:imageName', (req, res, next) => {
+  const imagePath = path.join(imageDirectory, req.params.imageName);
+  fs.stat(imagePath, (err, stats) => {
+    if (err) {
+      return res.status(404).send('Image not found');
+    }
+    if (!stats.isFile()) {
+      return res.status(400).send('Not a valid image file');
+    }
+    res.sendFile(imagePath);
+  });
+});
 
 //Get all Products
 app.get('/collections/products', function (req, res, next) {
@@ -115,6 +131,6 @@ app.post('/collections/orders', function(req, res, next) {
 // });
 
 const port = process.env.PORT || 3000;
-  app.listen(port, function() {
-  console.log("App started on port: " + port);
+app.listen(port, function() {
+console.log("App started on port: " + port);
 });
